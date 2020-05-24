@@ -1,6 +1,6 @@
 # Wordpress Backup Script
 
-This script is simplify your life backup process of Wordpress site from CLI.
+This bash script is simplify your life backup process of Wordpress site from CLI.
 
 It's automatically check is wp-config.php file exist in current directory.
 If backups folder not exist - It's create backups folder in up-parent directory.
