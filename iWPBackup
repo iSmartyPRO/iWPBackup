@@ -1,0 +1,36 @@
+#!/bin/bash
+# Wordpress Backup Script
+# Created by Ilias Aidar
+# @iSmartyPro
+
+backupDir="../backups"
+str_date=$(date +"%Y-%m-%d_%H-%M-%S")
+echo "================================================================"
+if [[ -f "$PWD/wp-config.php" ]]
+then
+    WPDBNAME=`cat $PWD/wp-config.php | grep DB_NAME | cut -d \' -f 4`
+    WPDBUSER=`cat $PWD/wp-config.php | grep DB_USER | cut -d \' -f 4`
+    WPDBPASS=`cat $PWD/wp-config.php | grep DB_PASSWORD | cut -d \' -f 4`
+    if [ -d "$backupDir" ]
+    then 
+        echo "Backup folder is found"
+    else 
+        mkdir $backupDir
+        echo "Backup folder is created"
+    fi
+    echo "================================================================"
+    echo "Started files archiving - public_html_$str_date.tar.gz"
+    tar czfP "$backupDir/public_html_$str_date.tar.gz" $PWD
+    echo "Started MySQL Backup - $WPDBNAME_$str_date.sql"
+    mysqldump $WPDBNAME > "$backupDir/db_$WPDBNAME_$str_date.sql"
+    files_size=$(stat -c%s "$backupDir/public_html_$str_date.tar.gz")
+    db_size=$(stat -c%s "$backupDir/db_$WPDBNAME_$str_date.sql")
+    files_size_mb=$(($files_size/1024/1024))
+    db_size_mb=$(($db_size/1024/1024))
+    echo "Files size   : $files_size_mb Mb ($files_size bytes)"
+    echo "Database Size: $db_size_mb Mb ($db_size bytes)"
+    echo "Done!"
+else 
+    echo "There is no Wordpress config file."
+    echo "================================================================"
+fi
